@@ -15,18 +15,33 @@ class ElementRecord(Record):
 		super(ElementRecord,self).__init__(component_name, blood_type)
 		self.DateOfProcurement = procurement_date
 		self.LifeSpan = LifeSpan.LifeSpanOf(component_name)
+		self.status = "GOOD"
 
 	def getLifeLeft(self, current):
 		x = abs((current - self.DateOfProcurement).days)
 		return ((self.LifeSpan - x) if x<=self.LifeSpan else -1)
 
+	def updateStatus(self, status):
+		self.Status = status
+
+
 class DayRecord(Record):
 	"""day wise records to show socke at the end of the day"""
-	def __init__(self, component_name, blood_type, requested, supplied, replaced, expired, damaged):
+	def __init__(self, date, component_name, blood_type):
 		super(DayRecord, self).__init__(component_name, blood_type)
-		self.Requested = requested
-		self.Supplied = supplied
-		self.Replaced = replaced
-		self.Expired = expired
-		self.Damaged = damaged
-		
+		self.date = date
+		self.Requested = getTotalRequests()
+		self.Supplied = getTotalSupplied()
+		self.Replaced = getTotalReplacements()
+		self.Expired = getExpired()
+		self.Damaged = getDamaged()
+		clean()                                    #removes all damages, supplied etc in db
+		self.FinalStock = getFinalStock()
+
+
+class ReplacementRecord(Record):
+	"""Record for each blood unit"""
+	def __init__(self, replacement_id, component_name, blood_type, units):
+		super(ReplacementRecord,self).__init__(component_name, blood_type)
+		self.ReplacerId = replcement_id
+		self.units = units

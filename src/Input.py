@@ -1,0 +1,1 @@
+"""generates input to the bloodbank"""

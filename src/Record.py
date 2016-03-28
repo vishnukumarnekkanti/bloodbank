@@ -1,9 +1,9 @@
 from datetime import datetime
-import LifeSpan
+import Limits
 
 class Record(object):
 	"""Skeleton for Records"""
-	def __init__(self, component_name, blood_type):
+	def __init__(self, rec_id, component_name, blood_type):
 		self.id = 0
 		self.Name = component_name
 		self.Type = blood_type
@@ -11,10 +11,10 @@ class Record(object):
 
 class ElementRecord(Record):
 	"""Record for each blood unit"""
-	def __init__(self, component_name, blood_type, procurement_date):
-		super(ElementRecord,self).__init__(component_name, blood_type)
+	def __init__(self, rec_id, component_name, blood_type, procurement_date):
+		super(ElementRecord,self).__init__(rec_id, component_name, blood_type)
 		self.DateOfProcurement = procurement_date
-		self.LifeSpan = LifeSpan.LifeSpanOf(component_name)
+		self.LifeSpan = Limits.LifeSpan().LifeSpanOf(component_name)
 		self.status = "GOOD"
 
 	def getLifeLeft(self, current):
@@ -27,8 +27,8 @@ class ElementRecord(Record):
 
 class DayRecord(Record):
 	"""day wise records to show socke at the end of the day"""
-	def __init__(self, date, component_name, blood_type):
-		super(DayRecord, self).__init__(component_name, blood_type)
+	def __init__(self, id, component_name, blood_type, date):
+		super(DayRecord, self).__init__( rec_id, component_name, blood_type)
 		self.date = date
 		self.Requested = getTotalRequests()
 		self.Supplied = getTotalSupplied()
@@ -45,3 +45,4 @@ class ReplacementRecord(Record):
 		super(ReplacementRecord,self).__init__(component_name, blood_type)
 		self.ReplacerId = replcement_id
 		self.units = units
+

@@ -18,8 +18,8 @@ class Request(ParentRequest):
 		component = self.BloodComponent
 		blood_type = self.BloodType
 		units = self.Units 
-		if stockLevel(component, blood_type, units) :
-			supply(component, blood_type, units)
-			RequestStatus(component, blood_type, units, 1)
+		if stockLevel(component, blood_type, units) :                 #############DataBase
+			supply(component, blood_type, units)                 #############DataBase
+			RequestStatus(component, blood_type, units, 1)                 #############DataBase
 		else:
-			RequestStatus(component, blood_type, units, 0)
+			RequestStatus(component, blood_type, units, 0)                 #############DataBase

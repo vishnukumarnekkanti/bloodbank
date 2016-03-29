@@ -6,23 +6,19 @@ from source import *
 from datetime import date, timedelta
 import random
 import threading
+import sqlEngine
 currDate = 0
 campLock = 0
 lock = threading.Lock()
-def beginDay():
-	return getCurrDate()
-
-def endDay():
-	global currDate
-	with lock:
-		updateDailyRecord()
-		currDate = currDate + timedelta(days = 1)
-
 def getCurrDate():
 	global currDate
 	if currDate==0:
 		currDate = date(2006, 1, 1)
 	return currDate
+
+
+def beginDay():
+	return getCurrDate()
 
 def checkStockLevel(component, blood_type):
 	limit = Limits.BloodBankLimits(component, blood_type)
@@ -50,7 +46,7 @@ def compensationRequest(component, blood_type, units):
 def ReplacementRequest(component, blood_type, units):
 	#create replacer
 	replacement = Replacement(0, component_name, blood_type, units)
-	replacementId = saveReplacement()                               ##########saves in db and returns replacement id
+	replacementId = replacement.saveRR()                               ##########saves in db and returns replacement id
 	replacer = Replacer(0, "human", "addr", "125478963", getCurrDate() + timedelta(days=7) , replacementId, "instr")
 	saveReplacerData()
 	#create request
@@ -61,8 +57,8 @@ def ReplacementRequest(component, blood_type, units):
 	checkStockLevel(component, blood_type)
 	
 def donation(rec_id, component_name, blood_type, procurement_date):
-	er = ElementRecord(rec_id, component_name, blood_type, procurement_date)
-	saveElementRecord(er)
+	er = ElementRecord(rec_id, component_name, blood_type, procurement_date, 1)
+	er.save()
 
 def organizebloodCamp(presentDate,component_name, blood_type): #blood camp for 3 days after 7 days from the present day
     campday1 = presentDate + timedelta(days=7)
@@ -74,18 +70,27 @@ def organizebloodCamp(presentDate,component_name, blood_type): #blood camp for 3
 	    #rand number to decide on donations that day
 	    rand = random.randint(100, 400)
 	    for x in xrange(rand):
-	        donation(0, component_name, blood_type, campday1)
+	        donation(0, component_name, blood_type, campday1, 1)
     while campday2!= getCurrDate():
     	pass
     with lock:
 	    #rand number to decide on donations that day
 	    rand = random.randint(200, 500)
 	    for x in xrange(rand):
-	        donation(0, component_name, blood_type, campday2)
+	        donation(0, component_name, blood_type, campday2, 1)
     while campday3!= getCurrDate():
     	pass
     with lock:
 	    #rand number to decide on donations that day
 	    rand = random.randint(300, 800)
 	    for x in xrange(rand):
-	    	donation(0, component_name, blood_type, campday2)
+	    	donation(0, component_name, blood_type, campday2, 1)
+    global campLock
+    campLock = 0
+
+
+def endDay():
+	global currDate
+	with lock:
+		updateDailyRecord()
+		currDate = currDate + timedelta(days = 1)

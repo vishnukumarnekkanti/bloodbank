@@ -1,3 +1,12 @@
+class BloodBankLimits(object):
+	"""Limits"""
+	def __init__(self, component, blood_type):
+		self.MAX_CAPACITY = 10000
+		self.CRITICAL_LIMIT = self.MAX_CAPACITY/10
+		self.component = component
+		self.Type = blood_type
+
+
 class LifeSpan(object):
 	"""LifeSpan records of components"""
 	def __init__(self):
@@ -11,7 +20,7 @@ class LifeSpan(object):
 		return self.Life.keys()
 
 	def LifeSpanOf(self, component):
-		if self.knownComponents.__contains__(component):
+		if (self.knownComponents()).__contains__(component):
 			return self.Life[component]
 		else:
 			raise ValueError("Unknown component type " + component + " known Components are " + str(self.knownComponents()))

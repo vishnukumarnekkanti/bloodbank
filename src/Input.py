@@ -37,7 +37,7 @@ if __name__ == '__main__':
 		choices_1 = [(0,60),(1,40)]
 		choices_2 = [(0,80),(1,20)]
 		for transaction in xrange(requestNum+donationNum):
-			if prob(choices_1) and donationNum>0:
+			if (prob(choices_1) == 1) and donationNum>0:
 				donation(0, component_name, blood_type, (getCurrDate()))
 				donationNum-=1
 			else:

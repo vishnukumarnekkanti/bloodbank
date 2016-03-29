@@ -24,7 +24,7 @@ class ElementRecord(Record):
 
 	def updateStatus(self, status):
 		self.Status = status
-		sqlEngine.updateElementRecordStatus(self)       #######sqlEngine
+		sqlEngine.updateERStatus(self, Status)       #######sqlEngine
 
 	def save(self):
 		sqlEngine.saveER()
@@ -44,7 +44,7 @@ class DayRecord(Record):
 		self.FinalStock = sqlEngine.getFinalStock()
 
 	def save(self):
-		sqlEngine.saveDailyStats(self)                     #########sqlEngine
+		sqlEngine.saveDSR(self)                     #########sqlEngine
 
 
 class ReplacementRecord(Record):

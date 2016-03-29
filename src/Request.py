@@ -9,7 +9,7 @@ class ParentRequest(object):
 		self.CompensationMethod = compensation_type           # cash or replacement
 
 class Request(ParentRequest):
-	"""Compensation Request flow"""
+	"""Request flow"""
 	def __init__(self, component, blood_type, units, compensation_type):
 		super(CompensationRequest, self).__init__( component, blood_type, units, compensation_type)
 		

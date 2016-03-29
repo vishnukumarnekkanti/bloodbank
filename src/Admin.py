@@ -22,7 +22,7 @@ def beginDay():
 
 def checkStockLevel(component, blood_type):
 	limit = Limits.BloodBankLimits(component, blood_type)
-	level = getCurrentLevel(component, blood_type)                  #############DataBase
+	level = sqlEngine.getCurrentLevel(component, blood_type)                  #############DataBase
 	global campLock
 	if level > 2*limit.CRITICAL_LIMIT and level < 4*limit.CRITICAL_LIMIT:
 		if campLock == 0:   ############blood camp not scheduled

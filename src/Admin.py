@@ -6,8 +6,8 @@ from source import *
 from datetime import date, timedelta
 import random
 import threading
-global currDate = 0
-global campLock = 0
+currDate = 0
+campLock = 0
 lock = threading.Lock()
 def beginDay():
 	return getCurrDate()
@@ -41,7 +41,7 @@ def checkStockLevel(component, blood_type):
 
 def compensationRequest(component, blood_type, units):
 	#create request
-	req = new Request(component, blood_type, units, "compensation")
+	req = Request(component, blood_type, units, "compensation")
 	#serve request
 	req.flow()
 	#check stock level
@@ -54,7 +54,7 @@ def ReplacementRequest(component, blood_type, units):
 	replacer = Replacer(0, "human", "addr", "125478963", getCurrDate() + timedelta(days=7) , replacementId, "instr")
 	saveReplacerData()
 	#create request
-	req = new Request(component, blood_type, units, "compensation")
+	req = Request(component, blood_type, units, "compensation")
 	#serve request
 	req.flow()
 	#check stock level

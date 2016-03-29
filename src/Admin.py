@@ -5,15 +5,18 @@ from Record import *
 from source import *
 from datetime import date, timedelta
 import random
+import threading
 global currDate = 0
 global campLock = 0
+lock = threading.Lock()
 def beginDay():
 	return getCurrDate()
 
 def endDay():
 	global currDate
-	updateDailyRecord()
-	currDate = currDate + timedelta(days = 1)
+	with lock:
+		updateDailyRecord()
+		currDate = currDate + timedelta(days = 1)
 
 def getCurrDate():
 	global currDate
@@ -67,19 +70,22 @@ def organizebloodCamp(presentDate,component_name, blood_type): #blood camp for 3
     campday3 = presentDate + timedelta(days=9)
     while campday1!= getCurrDate():
     	pass
-    #rand number to decide on donations that day
-    rand = random.randint(100, 400)
-    for x in xrange(rand):
-    	donation(0, component_name, blood_type, campday1)
+    with lock:
+	    #rand number to decide on donations that day
+	    rand = random.randint(100, 400)
+	    for x in xrange(rand):
+	        donation(0, component_name, blood_type, campday1)
     while campday2!= getCurrDate():
     	pass
-    #rand number to decide on donations that day
-    rand = random.randint(200, 500)
-    for x in xrange(rand):
-    	donation(0, component_name, blood_type, campday2)
+    with lock:
+	    #rand number to decide on donations that day
+	    rand = random.randint(200, 500)
+	    for x in xrange(rand):
+	        donation(0, component_name, blood_type, campday2)
     while campday3!= getCurrDate():
     	pass
-    #rand number to decide on donations that day
-    rand = random.randint(300, 800)
-    for x in xrange(rand):
-    	donation(0, component_name, blood_type, campday2)
+    with lock:
+	    #rand number to decide on donations that day
+	    rand = random.randint(300, 800)
+	    for x in xrange(rand):
+	    	donation(0, component_name, blood_type, campday2)

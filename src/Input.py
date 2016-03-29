@@ -34,6 +34,7 @@ if __name__ == '__main__':
 		choices_0 = [(0,99),(1,1)]
 		requestNum = int((getRand(50,200))*inputData[day] + 3*((getRand(50,200))*inputData[day])*prob(choices_0))
 		donationNum = int((getRand(10,50))*inputData[day])
+		requestNum += sqlEngine.getReplacementNum()                 #####################db
 		choices_1 = [(0,60),(1,40)]
 		choices_2 = [(0,80),(1,20)]
 		for transaction in xrange(requestNum+donationNum):

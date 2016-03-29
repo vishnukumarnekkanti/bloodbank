@@ -20,7 +20,7 @@ weighted_choice = lambda s : random.choice(sum(([v]*wt for v,wt in s),[]))
 def prob(choices):
     return weighted_choice(choices) 
 if __name__ == '__main__':
-	f = open(filepath, 'r')
+	f = open("input.txt", 'r')
 	inputData = {}
 	for line in f:
 	    k, v = line.strip().split(',')
@@ -32,9 +32,9 @@ if __name__ == '__main__':
 	for day in xrange(1,3651):
 		beginDay()
 		choices_0 = [(0,99),(1,1)]
-		requestNum = int((getRand(50,200))*inputData[day] + 3*((getRand(50,200))*inputData[day])*prob(choices_0))
+		requestNum = int((getRand(50,100))*inputData[day] + 3*((getRand(50,100))*inputData[day])*prob(choices_0))
 		donationNum = int((getRand(10,50))*inputData[day])
-		requestNum += sqlEngine.getReplacementNum()                 #####################db
+		donationNum += sqlEngine.getReplacementNum()                 #####################db
 		choices_1 = [(0,60),(1,40)]
 		choices_2 = [(0,80),(1,20)]
 		for transaction in xrange(requestNum+donationNum):

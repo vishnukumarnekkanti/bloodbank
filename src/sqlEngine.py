@@ -1,6 +1,7 @@
 """database services"""
 import random
 from Record import *
+from Admin import *
 
 
 def getCurrentLevel(component, blood_type):
@@ -13,7 +14,7 @@ def saveER(er):
 	pass
 
 def saveRR(rr):
-	pass       ##return the id
+	pass
 
 def updateERStatus(er, status):
 	pass
@@ -23,4 +24,7 @@ def saveDSR(dsr):
 
 def RequestStatus(component, blood_type, units, status):
 	statusDict = {1:"Active",0:"used",-1:"expired"}
+	pass
+
+def updateDailyRecord():
 	pass

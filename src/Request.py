@@ -1,17 +1,16 @@
 
 class ParentRequest(object):
 	"""Skeleton class of all Requests"""
-	def __init__(self, component, blood_type, units, compensation_type):
+	def __init__(self, component, blood_type, units):
 		super(Request, self).__init__()
 		self.BloodComponent = component
 		self.BloodType = blood_type
 		self.Units = units
-		self.CompensationMethod = compensation_type           # cash or replacement
 
 class Request(ParentRequest):
 	"""Request flow"""
-	def __init__(self, component, blood_type, units, compensation_type):
-		super(CompensationRequest, self).__init__( component, blood_type, units, compensation_type)
+	def __init__(self, component, blood_type, units):
+		super(CompensationRequest, self).__init__( component, blood_type, units)
 		
 	def flow(self):
 		"""receive compensation, supply, check inventory status"""

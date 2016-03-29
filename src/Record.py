@@ -27,7 +27,7 @@ class ElementRecord(Record):
 		sqlEngine.updateERStatus(self, Status)       #######sqlEngine
 
 	def save(self):
-		sqlEngine.saveER()
+		sqlEngine.saveER(self)
 
 
 class DayRecord(Record):
@@ -39,7 +39,6 @@ class DayRecord(Record):
 		self.Supplied = sqlEngine.getTotalSupplied()
 		self.Replaced = sqlEngine.getTotalReplacements()
 		self.Expired = sqlEngine.getExpired()
-		self.Damaged = sqlEngine.getDamaged()
 		sqlEngine.clean()                                    #removes all damages, supplied etc in db
 		self.FinalStock = sqlEngine.getFinalStock()
 
@@ -49,10 +48,11 @@ class DayRecord(Record):
 
 class ReplacementRecord(Record):
 	"""Record for each blood unit"""
-	def __init__(self, replacement_id, component_name, blood_type, units):
+	def __init__(self, replacement_id, component_name, blood_type, units, deadline):
 		super(ReplacementRecord,self).__init__(replacement_id, component_name, blood_type)
 		self.units = units
+		self.Deadline = deadline
 
-	def save(self):
-		return sqlEngine.saveRR() #returns replacementId
+	def saveRR(self):
+		sqlEngine.saveRR(self) #returns replacementId
 

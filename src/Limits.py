@@ -2,7 +2,7 @@ class BloodBankLimits(object):
 	"""Limits"""
 	def __init__(self, component, blood_type):
 		self.MAX_CAPACITY = 10000
-		self.CRITICAL_LIMIT = self.MAX_CAPACITY/10
+		self.CRITICAL_LIMIT = self.MAX_CAPACITY/20
 		self.component = component
 		self.Type = blood_type
 

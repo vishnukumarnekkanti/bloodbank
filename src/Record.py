@@ -43,6 +43,5 @@ class ReplacementRecord(Record):
 	"""Record for each blood unit"""
 	def __init__(self, replacement_id, component_name, blood_type, units):
 		super(ReplacementRecord,self).__init__(component_name, blood_type)
-		self.ReplacerId = replcement_id
 		self.units = units
 

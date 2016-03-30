@@ -7,6 +7,7 @@ from datetime import date, timedelta
 import random
 import threading
 import sqlEngine
+
 currDate = 0
 campLock = 0
 lock = threading.Lock()
@@ -75,7 +76,7 @@ def compensationRequest(component, blood_type, units):
 
 def ReplacementRequest(component, blood_type, units):
 	#create replacer
-	replacement = ReplacementRecord(0, component_name, blood_type, units, getCurrDate()+timedelta(days=7), 1)
+	replacement = ReplacementRecord(0, component, blood_type, units, getCurrDate()+timedelta(days=7), 1)
 	#replacementId = replacement.saveRR()                               ##########saves in db and returns replacement id
 	#replacer = Replacer(0, "human", "addr", "125478963", getCurrDate() + timedelta(days=7) , replacementId, "instr")
 	#---------------change------------------
@@ -94,5 +95,5 @@ def donation(rec_id, component_name, blood_type, procurement_date):
 def endDay():
 	global currDate
 	with lock:
-		sqlEngine.updateDailyRecord()
+		sqlEngine.updateDailyRecord(getCurrDate())
 		currDate = currDate + timedelta(days = 1)

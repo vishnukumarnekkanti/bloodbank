@@ -1,7 +1,9 @@
 """database services"""
 import random
 from Record import *
-from Admin import *
+# from Admin import *
+# from Admin import getCurrDate
+from Input import *
 import mysql.connector
 from datetime import date, timedelta
 
@@ -9,7 +11,7 @@ cnx = mysql.connector.connect(user='root', password='spurthi12', database='BLOOD
 cursor = cnx.cursor()
 
 def strTodate(s):
-	s = s.split()
+	s = s.split('-')
 	return date(int(s[0]), int(s[1]), int(s[2]))
 
 def getCurrentLevel(component, blood_type):
@@ -48,7 +50,7 @@ def supply(component, blood_type, units):
 			row = cursor.fetchone()
 
 		for row in ans:
-			cursor.execute("UPDATE element_record SET status=%s WHERE id = row" % (0))
+			cursor.execute("UPDATE element_record SET status='{0}' WHERE id = '{1}'".format(0, row))
 		cnx.commit()
 		return True
 	else:
@@ -56,11 +58,13 @@ def supply(component, blood_type, units):
 
 def saveER(er):
 	################ save ER to db
-	data_record = (str(er.DateOfProcurement), er.Name, er.Type, er.status)
-	add_record = ("INSERT INTO element_record "
-			"(procurement_date, component_name, blood_type, status) "
-			"VALUES (%s, %s, %s, %d)")
-	cursor.execute(add_record, data_record)
+	data_record = (str(er.DateOfProcurement), er.Name, er.Type, er.Status)
+	print data_record
+	# add_record = ("INSERT INTO element_record "
+	# 		"(procurement_date, component_name, blood_type, status) "
+	# 		"VALUES (%s, %s, %s, %d)")
+	add_record = "INSERT INTO element_record(procurement_date, component_name, blood_type, status) VALUES('{0}', '{1}', '{2}', '{3}');".format(str(er.DateOfProcurement), er.Name, er.Type, er.Status)
+	cursor.execute(add_record)
 	cnx.commit()
 
 def saveRR(rr):
@@ -79,12 +83,14 @@ def saveDSR(dsr):
 
 def RequestStatus(component, blood_type, u, s):
 	statusDict = {1:"success",0:"failure", 2:"notyetserved"}
-	data_record = (component, blood_type, u, s)
-	add_record = ("INSERT INTO request " "(component_name, blood_type, units, status)" "VALUES (%s, %s, %d, %d)")
-	cursor.execute(add_record, data_record)
+	data_record = (component, blood_type, int(u), int(s))
+	print data_record
+	#add_record = ("INSERT INTO request(component_name, blood_type, units, status) VALUES(%s, %s, %d, %d)")
+	add_record = "INSERT INTO request(component_name, blood_type, units, status) VALUES('{0}', '{1}', '{2}', '{3}');".format(component, blood_type, u, s)
+	cursor.execute(add_record)
 	cnx.commit()
 
-def updateDailyRecord():
+def updateDailyRecord(getCurrDate):
 	cursor.execute("SELECT * FROM element_record")
 	row = cursor.fetchone()
 	supplied = 0
@@ -95,9 +101,9 @@ def updateDailyRecord():
 		print(row)
 		if row[-1] == 1:
 			supplied += 1
-		elif row[1] == str((getCurrDate())-timedelta(days=21)):
+		elif row[1] == str(getCurrDate-timedelta(days=21)):
 			expired += 1
-		if strTodate(row[1]) == getCurrDate():
+		if strTodate(row[1]) == getCurrDate:
 			donations += 1
 		row = cursor.fetchone()
 	
@@ -109,14 +115,14 @@ def updateDailyRecord():
 			failure += row[-2]
 		row = cursor.fetchone()
 	
-	cursor.execute("DELETE FROM element_record WHERE status = 0 OR procurement_date == str((getCurrDate())-timedelta(days=21))")
+	cursor.execute("DELETE FROM element_record WHERE status = '{0}' OR procurement_date = '{1}';".format(0, str((getCurrDate-timedelta(days=21)))))
 	cursor.execute("TRUNCATE TABLE request")
-	cursor.execute("DELETE FROM replacement_record WHERE status = 0 OR deadline == str(getCurrDate())")
+	cursor.execute("DELETE FROM replacement_record WHERE status = 0 OR deadline = '{0}';".format(str(getCurrDate)))
 	cursor.execute("SELECT COUNT(*) AS C FROM element_record")
 	stock = int((cursor.fetchone())[0])
-	data_record = ('rbc', 'A+', str(getCurrDate()), (supplied+failure), supplied, donations, expired, stock)
-	add_record = ("INSERT INTO request " "(component_name, blood_type, date, required, supplied, recieved, expired, final_stock)" "VALUES (%s, %s, %s, %d, %d, %d, %d, %d)")
-	cursor.execute(add_record, data_record)
+	#data_record = ('rbc', 'A+', str(getCurrDate), (supplied+failure), supplied, donations, expired, stock)
+	add_record = "INSERT INTO daily_record (component_name, blood_type, `date`, required, supplied, recieved, expired, final_stock) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}');".format('rbc', 'A+', str(getCurrDate), supplied+failure, supplied, donations, expired, stock)
+	cursor.execute(add_record)
 	cnx.commit()
 
 def getReplacementNum():

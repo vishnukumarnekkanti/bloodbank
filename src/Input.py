@@ -24,7 +24,7 @@ if __name__ == '__main__':
 	inputData = {}
 	for line in f:
 	    k, v = line.strip().split(',')
-	    inputData[k.strip()] = v.strip()
+	    inputData[int(k.strip())] = float(v.strip())
 
 	f.close()
 	component = "rbc"
@@ -39,7 +39,7 @@ if __name__ == '__main__':
 		choices_2 = [(0,80),(1,20)]
 		for transaction in xrange(requestNum+donationNum):
 			if (prob(choices_1) == 1) and donationNum>0:
-				donation(0, component_name, blood_type, (getCurrDate()))
+				donation(0, component, blood_type, (getCurrDate()))
 				donationNum-=1
 			else:
 				units = int((getRand(1,20))*inputData[day] + 3*((getRand(10,20))*inputData[day])*prob(choices_0))

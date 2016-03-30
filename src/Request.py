@@ -1,10 +1,10 @@
-
+import sqlEngine
 ##request should have status
 
 class ParentRequest(object):
 	"""Skeleton class of all Requests"""
 	def __init__(self, component, blood_type, units, status):
-		super(Request, self).__init__()
+		super(ParentRequest, self).__init__()
 		self.BloodComponent = component
 		self.BloodType = blood_type
 		self.Units = units
@@ -13,7 +13,7 @@ class ParentRequest(object):
 class Request(ParentRequest):
 	"""Request flow"""
 	def __init__(self, component, blood_type, units, status):
-		super(CompensationRequest, self).__init__( component, blood_type, units, status)
+		super(Request, self).__init__( component, blood_type, units, status)
 		
 	def flow(self):
 		"""receive compensation, supply, check inventory status"""

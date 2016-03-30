@@ -24,7 +24,7 @@ class ElementRecord(Record):
 
 	def updateStatus(self, status):
 		self.Status = status
-		sqlEngine.updateERStatus(self, Status)       #######sqlEngine
+		sqlEngine.updateERStatus(self, Status)       #######sqlEngine - doubt
 
 	def save(self):
 		sqlEngine.saveER(self)
@@ -43,13 +43,14 @@ class DayRecord(Record):
 		self.FinalStock = sqlEngine.getFinalStock()
 
 	def save(self):
-		sqlEngine.saveDSR(self)                     #########sqlEngine
+		sqlEngine.saveDSR(self)                     #########sqlEngine - doubt
 
 
 class ReplacementRecord(Record):
 	"""Record for each blood unit"""
-	def __init__(self, replacement_id, component_name, blood_type, units, deadline):
-		super(ReplacementRecord,self).__init__(replacement_id, component_name, blood_type)
+	def __init__(self, rec_id, component_name, blood_type, units, deadline):
+		#changeeeeeee
+		super(ReplacementRecord,self).__init__(rec_id, component_name, blood_type)
 		self.units = units
 		self.Deadline = deadline
 

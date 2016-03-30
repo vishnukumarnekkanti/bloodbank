@@ -53,7 +53,7 @@ def organizebloodCamp(presentDate,component_name, blood_type): #blood camp for 3
 
 def checkStockLevel(component, blood_type):
 	limit = Limits.BloodBankLimits(component, blood_type)
-	level = sqlEngine.getCurrentLevel(component, blood_type)                  #############DataBase
+	level = sqlEngine.getCurrentLevel(component, blood_type)                  #############DataBase - y
 	global campLock
 	if level > 2*limit.CRITICAL_LIMIT and level < 4*limit.CRITICAL_LIMIT:
 		if campLock == 0:   ############blood camp not scheduled
@@ -67,7 +67,7 @@ def checkStockLevel(component, blood_type):
 
 def compensationRequest(component, blood_type, units):
 	#create request
-	req = Request(component, blood_type, units)
+	req = Request(component, blood_type, units, 2)
 	#serve request
 	req.flow()
 	#check stock level
@@ -78,7 +78,8 @@ def ReplacementRequest(component, blood_type, units):
 	replacement = ReplacementRecord(0, component_name, blood_type, units, getCurrDate())
 	#replacementId = replacement.saveRR()                               ##########saves in db and returns replacement id
 	#replacer = Replacer(0, "human", "addr", "125478963", getCurrDate() + timedelta(days=7) , replacementId, "instr")
-	saveReplacerData()
+	#---------------change------------------
+	#saveReplacerData()
 	#create request
 	req = Request(component, blood_type, units)
 	#serve request
@@ -89,7 +90,6 @@ def ReplacementRequest(component, blood_type, units):
 def donation(rec_id, component_name, blood_type, procurement_date):
 	er = ElementRecord(rec_id, component_name, blood_type, procurement_date, 1)
 	er.save()
-
 
 def endDay():
 	global currDate

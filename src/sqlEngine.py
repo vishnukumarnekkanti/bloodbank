@@ -51,7 +51,7 @@ def supply(component, blood_type, units):
 
 		for row in ans:
 			cursor.execute("UPDATE element_record SET status='{0}' WHERE id = '{1}'".format(0, row))
-		cnx.commit()
+			cnx.commit()
 		return True
 	else:
 		return False
@@ -99,7 +99,7 @@ def updateDailyRecord(getCurrDate):
 	donations = 0
 	while row is not None:
 		#print(row)
-		if row[-1] == 1:
+		if row[-1] == 0:
 			supplied += 1
 		elif row[1] == str(getCurrDate-timedelta(days=21)):
 			expired += 1
@@ -116,10 +116,15 @@ def updateDailyRecord(getCurrDate):
 		row = cursor.fetchone()
 	
 	cursor.execute("DELETE FROM element_record WHERE status = '{0}' OR procurement_date = '{1}';".format(0, str((getCurrDate-timedelta(days=21)))))
+	cnx.commit()
 	cursor.execute("TRUNCATE TABLE request")
+	cnx.commit()
 	cursor.execute("DELETE FROM replacement_record WHERE status = 0 OR deadline = '{0}';".format(str(getCurrDate)))
+	cnx.commit()
 	cursor.execute("SELECT COUNT(*) AS C FROM element_record")
-	stock = int((cursor.fetchone())[0])
+	g = cursor.fetchone()
+	#print g[0]
+	stock = int(g[0])
 	#data_record = ('rbc', 'A+', str(getCurrDate), (supplied+failure), supplied, donations, expired, stock)
 	add_record = "INSERT INTO daily_record (component_name, blood_type, `date`, required, supplied, received, expired, final_stock) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}');".format('rbc', 'A+', str(getCurrDate), supplied+failure, supplied, donations, expired, stock)
 	cursor.execute(add_record)
@@ -143,5 +148,5 @@ def getReplacementNum():
 		key = row[0]
 		cursor.execute("UPDATE replacement_record SET status=%s WHERE replacement_id = key " % (0))
 		replacements += row[3]
-	cnx.commit()
+		cnx.commit()
 	return replacements

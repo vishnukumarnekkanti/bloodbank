@@ -21,7 +21,7 @@ def getCurrentLevel(component, blood_type):
 	row = cursor.fetchone()
 	count = 0
 	while row is not None:
-		print(row)
+		#print(row)
 		if row[-1] == 1:
 			count += 1
 		row = cursor.fetchone()
@@ -34,7 +34,7 @@ def supply(component, blood_type, units):
 	row = cursor.fetchone()
 	count = 0
 	while row is not None:
-		print(row)
+		#print(row)
 		if row[-1] == 1:
 			count += 1
 		row = cursor.fetchone()
@@ -59,7 +59,7 @@ def supply(component, blood_type, units):
 def saveER(er):
 	################ save ER to db
 	data_record = (str(er.DateOfProcurement), er.Name, er.Type, er.Status)
-	print data_record
+	#print data_record
 	# add_record = ("INSERT INTO element_record "
 	# 		"(procurement_date, component_name, blood_type, status) "
 	# 		"VALUES (%s, %s, %s, %d)")
@@ -84,7 +84,7 @@ def saveDSR(dsr):
 def RequestStatus(component, blood_type, u, s):
 	statusDict = {1:"success",0:"failure", 2:"notyetserved"}
 	data_record = (component, blood_type, int(u), int(s))
-	print data_record
+	#print data_record
 	#add_record = ("INSERT INTO request(component_name, blood_type, units, status) VALUES(%s, %s, %d, %d)")
 	add_record = "INSERT INTO request(component_name, blood_type, units, status) VALUES('{0}', '{1}', '{2}', '{3}');".format(component, blood_type, u, s)
 	cursor.execute(add_record)
@@ -98,7 +98,7 @@ def updateDailyRecord(getCurrDate):
 	expired = 0
 	donations = 0
 	while row is not None:
-		print(row)
+		#print(row)
 		if row[-1] == 1:
 			supplied += 1
 		elif row[1] == str(getCurrDate-timedelta(days=21)):
@@ -110,7 +110,7 @@ def updateDailyRecord(getCurrDate):
 	cursor.execute("SELECT * FROM request")
 	row = cursor.fetchone()
 	while row is not None:
-		print(row)
+		#print(row)
 		if row[-1] == 0:
 			failure += row[-2]
 		row = cursor.fetchone()
@@ -121,7 +121,7 @@ def updateDailyRecord(getCurrDate):
 	cursor.execute("SELECT COUNT(*) AS C FROM element_record")
 	stock = int((cursor.fetchone())[0])
 	#data_record = ('rbc', 'A+', str(getCurrDate), (supplied+failure), supplied, donations, expired, stock)
-	add_record = "INSERT INTO daily_record (component_name, blood_type, `date`, required, supplied, recieved, expired, final_stock) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}');".format('rbc', 'A+', str(getCurrDate), supplied+failure, supplied, donations, expired, stock)
+	add_record = "INSERT INTO daily_record (component_name, blood_type, `date`, required, supplied, received, expired, final_stock) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}');".format('rbc', 'A+', str(getCurrDate), supplied+failure, supplied, donations, expired, stock)
 	cursor.execute(add_record)
 	cnx.commit()
 

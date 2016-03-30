@@ -30,8 +30,7 @@ TABLES['daily_record'] = (
 	"  `date` varchar(15) NOT NULL,"
 	"  `required` int NOT NULL,"
 	"  `supplied` int NOT NULL,"
-	"  `replaced` int NOT NULL,"
-	"  `damage` int NOT NULL,"
+	"  `received` int NOT NULL,"
 	"  `expired` int NOT NULL,"
 	"  `final_stock` int NOT NULL"
 	") ENGINE=InnoDB")
@@ -52,6 +51,8 @@ TABLES['replacement_record'] = (
 	"  `component_name` varchar(15) NOT NULL,"
 	"  `blood_type` varchar(5) NOT NULL,"
 	"  `units` int NOT NULL,"
+	"  `deadline` varchar(15) NOT NULL,"
+	"  `status` int NOT NULL,"
 	"  PRIMARY KEY (`replacement_id`)"
 	") ENGINE=InnoDB")
 

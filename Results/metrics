@@ -142,7 +142,7 @@ def checkStockLevel(component, blood_type):
 	level = sqlEngine.getCurrentLevel(component, blood_type)                  #############DataBase - y
 	global campLock
 	global campDay
-	if level < limit.MAX_CAPACITY/2 :#level > 2*limit.CRITICAL_LIMIT and level < 4*limit.CRITICAL_LIMIT:
+	if level < limit.MAX_CAPACITY/2 :
 		if campLock == 0:   ############blood camp not scheduled
 		    campLock=1
 		    campDay = getCurrDate() + timedelta(days=5)

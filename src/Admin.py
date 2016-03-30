@@ -21,7 +21,7 @@ def getCurrDate():
 
 
 def organizebloodCamp(component_name, blood_type): #blood camp for 3 days after 7 days from the present day
-    rand = random.randint(1000, 5000)
+    rand = random.randint(1000, 3000)
     c = getCurrDate()
     print str(c),rand
     for x in xrange(rand):
@@ -40,10 +40,10 @@ def checkStockLevel(component, blood_type):
 	level = sqlEngine.getCurrentLevel(component, blood_type)                  #############DataBase - y
 	global campLock
 	global campDay
-	if level > 2*limit.CRITICAL_LIMIT and level < 4*limit.CRITICAL_LIMIT:
+	if level < limit.MAX_CAPACITY/2 :#level < 4*limit.CRITICAL_LIMIT:
 		if campLock == 0:   ############blood camp not scheduled
 		    campLock=1
-		    campDay = getCurrDate() + timedelta(days=7)
+		    campDay = getCurrDate() + timedelta(days=5)
 		    #organizeBloodCamp(getCurrDate(), component_name, blood_type)
 		else:
 			pass
@@ -78,7 +78,6 @@ def donation(rec_id, component_name, blood_type, procurement_date):
 	er.save()
 
 def endDay():
-	print "gg"
 	global currDate
 	with lock:
 		sqlEngine.updateDailyRecord(getCurrDate())
@@ -111,21 +110,22 @@ if __name__ == '__main__':
 	f.close()
 	component = "rbc"
 	blood_type = "A+"
-	for day in xrange(1,4):
+	for day in xrange(1,100):
 		d = beginDay()
-		choices_0 = [(0,99),(1,1)]
-		requestNum = int((getRand(10,50))*inputData[day] + ((getRand(50,150))*inputData[day])*prob(choices_0))
+		choices_0 = [(0,90),(1,10)]
+		requestNum = int((getRand(1,10))*inputData[day] + 2*((getRand(5,30))*inputData[day])*prob(choices_0))
 		donationNum = int((getRand(10,50))*inputData[day])
 		donationNum += sqlEngine.getReplacementNum()                 #####################db
 		choices_1 = [(0,60),(1,40)]
 		choices_2 = [(0,80),(1,20)]
-		print "yes" , requestNum+donationNum
+		choices_3 = [(0,499),(1,1)]
+		print "Transactions on ", str(currDate) , " = " , requestNum+donationNum
 		for transaction in xrange(requestNum+donationNum):
 			if (prob(choices_1) == 1) and donationNum>0:
 				donation(0, component, blood_type, (getCurrDate()))
 				donationNum-=1
 			else:
-				units = int((getRand(1,10))*inputData[day] + ((getRand(10,20))*inputData[day])*prob(choices_0))
+				units = int((getRand(1,10))*inputData[day] + ((getRand(10,50))*inputData[day])*prob(choices_3))
 				if prob(choices_2):
 					compensationRequest(component, blood_type, units)
 				else:

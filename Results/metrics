@@ -186,5 +186,43 @@ if __name__ == '__main__':
 
 
 ===================================================================== 5 ==================================================================
+def organizebloodCamp(component_name, blood_type): #blood camp for 3 days after 7 days from the present day
+    rand = random.randint(1000, 5000)
+    c = getCurrDate()
+    print str(c),rand
+    for x in xrange(rand):
+        donation(0, component_name, blood_type, c)
+    global campLock
+    campLock = 0
 
+if __name__ == '__main__':
+	f = open("input.txt", 'r')
+	inputData = {}
+	for line in f:
+	    k, v = line.strip().split(',')
+	    inputData[int(k.strip())] = float(v.strip())
+	f.close()
+	component = "rbc"
+	blood_type = "A+"
+	for day in xrange(1,30):
+		d = beginDay()
+		choices_0 = [(0,99),(1,1)]
+		requestNum = int((getRand(10,50))*inputData[day] + ((getRand(50,150))*inputData[day])*prob(choices_0))
+		donationNum = int((getRand(10,20))*inputData[day])
+		donationNum += sqlEngine.getReplacementNum()                 #####################db
+		choices_1 = [(0,60),(1,40)]
+		choices_2 = [(0,80),(1,20)]
+		print "yes" , requestNum+donationNum
+		for transaction in xrange(requestNum+donationNum):
+			if (prob(choices_1) == 1) and donationNum>0:
+				donation(0, component, blood_type, (getCurrDate()))
+				donationNum-=1
+			else:
+				units = int((getRand(1,10))*inputData[day] + ((getRand(10,20))*inputData[day])*prob(choices_0))
+				if prob(choices_2):
+					compensationRequest(component, blood_type, units)
+				else:
+					ReplacementRequest(component, blood_type, units)
+				requestNum-=1
+		endDay()
 

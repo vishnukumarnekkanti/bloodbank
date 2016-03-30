@@ -13,8 +13,12 @@ lock = threading.Lock()
 
 def getCurrDate():
 	global currDate
+	global campLock
 	if currDate==0:
 		currDate = date(2006, 1, 1)
+		if (campLock == 0) and ((currDate.day, currDate.month) in [(19,1),(8,8)]) :
+			campLock = 1
+			thread.start_new_thread(organizeBloodCamp, currDate, "rbc", "A+",)
 	return currDate
 
 
@@ -75,7 +79,7 @@ def compensationRequest(component, blood_type, units):
 
 def ReplacementRequest(component, blood_type, units):
 	#create replacer
-	replacement = ReplacementRecord(0, component_name, blood_type, units, getCurrDate())
+	replacement = ReplacementRecord(0, component_name, blood_type, units, getCurrDate(),1)
 	#replacementId = replacement.saveRR()                               ##########saves in db and returns replacement id
 	#replacer = Replacer(0, "human", "addr", "125478963", getCurrDate() + timedelta(days=7) , replacementId, "instr")
 	saveReplacerData()

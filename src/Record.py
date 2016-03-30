@@ -37,7 +37,7 @@ class DayRecord(Record):
 		self.date = date
 		self.Requested = sqlEngine.getTotalRequests()
 		self.Supplied = sqlEngine.getTotalSupplied()
-		self.Replaced = sqlEngine.getTotalReplacements()
+		self.Received = sqlEngine.getTotalReceived()
 		self.Expired = sqlEngine.getExpired()
 		sqlEngine.clean()                                    #removes all damages, supplied etc in db
 		self.FinalStock = sqlEngine.getFinalStock()
@@ -48,10 +48,12 @@ class DayRecord(Record):
 
 class ReplacementRecord(Record):
 	"""Record for each blood unit"""
-	def __init__(self, replacement_id, component_name, blood_type, units, deadline):
+	def __init__(self, replacement_id, component_name, blood_type, units, deadline, status):
 		super(ReplacementRecord,self).__init__(replacement_id, component_name, blood_type)
 		self.units = units
 		self.Deadline = deadline
+		self.Status = status
+
 
 	def saveRR(self):
 		sqlEngine.saveRR(self) #returns replacementId

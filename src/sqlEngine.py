@@ -3,9 +3,14 @@ import random
 from Record import *
 from Admin import *
 import mysql.connector
+from datetime import date, timedelta
 
 cnx = mysql.connector.connect(user='root', password='spurthi12', database='BLOODBANK')
 cursor = cnx.cursor()
+
+def strTodate(s):
+	s = s.split()
+	return date(int(s[0]), int(s[1]), int(s[2]))
 
 def getCurrentLevel(component, blood_type):
 	#########################TODO : get count of records with status 1
@@ -32,14 +37,26 @@ def supply(component, blood_type, units):
 			count += 1
 		row = cursor.fetchone()
 	if count > units:
-		cursor.execute("UPDATE element_record SET status=%s WHERE status = 1 " % (0))
-		return 1
+		u = units
+		ans = []
+		cursor.execute("SELECT * FROM element_record WHERE status = 1")
+		row = cursor.fetchone()
+		while row is not None:
+			if u > 0:
+				ans.append(row[0])
+			u -= 1
+			row = cursor.fetchone()
+
+		for row in ans:
+			cursor.execute("UPDATE element_record SET status=%s WHERE id = row" % (0))
+		cnx.commit()
+		return True
 	else:
-		return -1
+		return False
 
 def saveER(er):
 	################ save ER to db
-	data_record = (er.DateOfProcurement, er.Name, er.Type, er.status)
+	data_record = (str(er.DateOfProcurement), er.Name, er.Type, er.status)
 	add_record = ("INSERT INTO element_record "
 			"(procurement_date, component_name, blood_type, status) "
 			"VALUES (%s, %s, %s, %d)")
@@ -47,13 +64,12 @@ def saveER(er):
 	cnx.commit()
 
 def saveRR(rr):
-	data_record = (rr.Name, rr.Type, rr.units, rr.Deadline)
+	data_record = (rr.Name, rr.Type, rr.units, str(rr.Deadline))
 	add_record = ("INSERT INTO replacement_record "
 			"(component_name, blood_type, units, deadline) "
 			"VALUES (%s, %s, %d, %d)")
 	cursor.execute(add_record, data_record)
 	cnx.commit()
-	pass
 
 def updateERStatus(er, status):
 	pass
@@ -63,7 +79,10 @@ def saveDSR(dsr):
 
 def RequestStatus(component, blood_type, u, s):
 	statusDict = {1:"success",0:"failure", 2:"notyetserved"}
-	cursor.execute("UPDATE request SET status=%d WHERE status = 2 AND units = u " % (s))
+	data_record = (component, blood_type, u, s)
+	add_record = ("INSERT INTO request " "(component_name, blood_type, units, status)" "VALUES (%s, %s, %d, %d)")
+	cursor.execute(add_record, data_record)
+	cnx.commit()
 
 def updateDailyRecord():
 	cursor.execute("SELECT * FROM element_record")
@@ -71,13 +90,17 @@ def updateDailyRecord():
 	supplied = 0
 	failure = 0
 	expired = 0
+	donations = 0
 	while row is not None:
 		print(row)
 		if row[-1] == 1:
 			supplied += 1
-		elif row[-1] == -1:
+		elif row[1] == str((getCurrDate())-timedelta(days=21)):
 			expired += 1
+		if strTodate(row[1]) == getCurrDate():
+			donations += 1
 		row = cursor.fetchone()
+	
 	cursor.execute("SELECT * FROM request")
 	row = cursor.fetchone()
 	while row is not None:
@@ -86,12 +109,33 @@ def updateDailyRecord():
 			failure += row[-2]
 		row = cursor.fetchone()
 	
-	cursor.execute("DELETE FROM element_record WHERE status = 0")
-	cursor.execute("DELETE FROM request WHERE status = 1")
+	cursor.execute("DELETE FROM element_record WHERE status = 0 OR procurement_date == str((getCurrDate())-timedelta(days=21))")
+	cursor.execute("TRUNCATE TABLE request")
+	cursor.execute("DELETE FROM replacement_record WHERE status = 0 OR deadline == str(getCurrDate())")
+	cursor.execute("SELECT COUNT(*) AS C FROM element_record")
+	stock = int((cursor.fetchone())[0])
+	data_record = ('rbc', 'A+', str(getCurrDate()), (supplied+failure), supplied, donations, expired, stock)
+	add_record = ("INSERT INTO request " "(component_name, blood_type, date, required, supplied, recieved, expired, final_stock)" "VALUES (%s, %s, %s, %d, %d, %d, %d, %d)")
+	cursor.execute(add_record, data_record)
+	cnx.commit()
 
 def getReplacementNum():
-	cursor.execute("SELECT * FROM element_record")
+	cursor.execute("SELECT COUNT(*) AS C FROM replacement_record")
+	a = int((cursor.fetchone())[0])
+	num = getRand(0, a)
+	lst = random.sample(range(1, a), num)
+	count = 1
+	ans = []
+	cursor.execute("SELECT * FROM replacement_record")
 	row = cursor.fetchone()
-	count = 0
 	while row is not None:
-		print(row)
+		if count in lst:
+			ans.append(row)
+		count += 1
+	replacements = 0
+	for row in ans:
+		key = row[0]
+		cursor.execute("UPDATE replacement_record SET status=%s WHERE replacement_id = key " % (0))
+		replacements += row[3]
+	cnx.commit()
+	return replacements

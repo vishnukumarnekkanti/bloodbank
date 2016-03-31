@@ -21,7 +21,7 @@ def getCurrDate():
 
 
 def organizebloodCamp(component_name, blood_type): #blood camp for 3 days after 7 days from the present day
-    rand = random.randint(1000, 3000)
+    rand = random.randint(2000, 3000)
     c = getCurrDate()
     print str(c),rand
     for x in xrange(rand):
@@ -110,11 +110,11 @@ if __name__ == '__main__':
 	f.close()
 	component = "rbc"
 	blood_type = "A+"
-	for day in xrange(1,100):
+	for day in xrange(1,730):
 		d = beginDay()
 		choices_0 = [(0,90),(1,10)]
 		requestNum = int((getRand(1,10))*inputData[day] + 2*((getRand(5,30))*inputData[day])*prob(choices_0))
-		donationNum = int((getRand(10,50))*inputData[day])
+		donationNum = int((getRand(0,50))*inputData[day])
 		donationNum += sqlEngine.getReplacementNum()                 #####################db
 		choices_1 = [(0,60),(1,40)]
 		choices_2 = [(0,80),(1,20)]
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 				donation(0, component, blood_type, (getCurrDate()))
 				donationNum-=1
 			else:
-				units = int((getRand(1,10))*inputData[day] + ((getRand(10,50))*inputData[day])*prob(choices_3))
+				units = int((getRand(1,10))*inputData[day] + ((getRand(10,25))*inputData[day])*prob(choices_0) + 2*((getRand(20,50))*inputData[day])*prob(choices_3))
 				if prob(choices_2):
 					compensationRequest(component, blood_type, units)
 				else:
